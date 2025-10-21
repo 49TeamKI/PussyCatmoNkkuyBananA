@@ -1,0 +1,25 @@
+using UnityEngine;
+
+// Implements ITransformable
+public class PlayerController : MonoBehaviour, ITransformable
+{
+    private bool isTransformed = false;
+
+    // Implementation of ITransformable
+    public void Transform()
+    {
+        isTransformed = !isTransformed; // Toggle state
+
+        if (isTransformed)
+        {
+            Debug.Log("Transforming! (Beast Mode!)");
+            // Logic to change model, increase speed, etc.
+            transform.localScale = new Vector3(1.5f, 1.5f, 1.5f); // Get bigger
+        }
+        else
+        {
+            Debug.Log("Reverting to normal form!");
+            transform.localScale = Vector3.one; // Reset scale
+        }
+    }
+}
