@@ -1,0 +1,73 @@
+using UnityEngine;
+using UnityEngine.UI; // (Optional) For connecting to a status bar
+
+public class PlayerNeeds : MonoBehaviour
+{
+    [Header("Toilet Need Settings")]
+    public float maxNeed = 100f;
+    public float currentNeed = 0f;
+
+    // How many units the need increases per second
+    public float needIncreaseRate = 0.5f;
+
+    // At what point the player gets a warning
+    public float urgeThreshold = 80f;
+
+    public bool isUrgent { get; private set; } = false;
+
+    // (Optional) UI Slider to show the status
+    public Slider needBar;
+
+    void Update()
+    {
+        // Increase the need over time
+        if (currentNeed < maxNeed)
+        {
+            currentNeed += needIncreaseRate * Time.deltaTime;
+        }
+        else
+        {
+            currentNeed = maxNeed;
+            // Trigger negative consequence if maxed out
+            HandleMaxNeedConsequence();
+        }
+
+        // Check if the need is urgent
+        if (currentNeed >= urgeThreshold && !isUrgent)
+        {
+            isUrgent = true;
+            Debug.LogWarning("I really need to go to the toilet!");
+            // You could apply a debuff here (e.g., slower movement)
+        }
+
+        // Update UI (Optional)
+        if (needBar != null)
+        {
+            needBar.value = currentNeed / maxNeed;
+        }
+    }
+
+    /// <summary>
+    /// Call this method when the player uses a toilet.
+    /// </summary>
+    public void RelieveNeed()
+    {
+        currentNeed = 0f;
+        isUrgent = false;
+        Debug.Log("Ah... much better.");
+        // Remove debuffs if you added any
+    }
+
+    /// <summary>
+    /// What happens when the meter hits 100%
+    /// </summary>
+    private void HandleMaxNeedConsequence()
+    {
+        // This is where the... "accident" happens.
+        Debug.LogError("OH NO! I couldn't hold it anymore!");
+
+        // Apply a serious debuff (e.g., social penalty, need to clean up)
+        // For now, we'll just reset the bar.
+        RelieveNeed();
+    }
+}
